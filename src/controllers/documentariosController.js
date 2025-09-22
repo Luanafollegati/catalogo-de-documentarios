@@ -110,4 +110,57 @@ const createDocumentarios = (req, res) => {
   });
 };
 
-export { getAllDocumentarios, getDocumentariosById, createDocumentarios  };
+//deletar por id
+const deleteDocumentarios = (req, res) => {
+    let id = parseInt(req.params.id);
+    const documentarioParaRemover = documentarios.find(d => d.id === id);
+
+    if (!documentarioParaRemover) {
+        return res.status(404).json({
+            success: false,
+            message: 'Este documentario nao existe'
+        })
+    }
+    const documentariosFiltrados = documentarios.filter(documentario => documentario.id !== id);
+    documentarios.splice(0, documentarios.length, ...documentariosFiltrados);
+    res.status(200).json({
+        success: true,
+        message: 'documentario deletado com sucesso',
+       documentarioRemovido: documentarioParaRemover
+    });
+};
+
+const updateDocumento = (req, res) => {
+    const id = parseInt(req.params.id);
+
+    const { titulo, tema, diretor, duracao, anoLancamento, plataforma, avaliacao, categoria } = req.body;
+
+
+    if (isNaN(id)) {
+        return res.status(400).json({
+            success: false,
+            message: "O id deve ser um número válido"
+        })
+    }
+ 
+    const documentarioExiste = documentarios.find(documentario => documentario.id === id);
+
+    if (!documentarioExiste) {
+        return res.status(400).json({
+            success: false,
+            message: "O documentario não existe."
+        })
+    }
+
+    if(!duracao) {
+        if (elixir <= 0 || elixir >= 10) {
+            return res.status(400).json({
+                success: false,
+                message: "O campo 'elixir' deve estar entre 1 e 9!"
+            });
+        }
+    }
+}
+
+
+export { getAllDocumentarios, getDocumentariosById, createDocumentarios, deleteDocumentarios  };
