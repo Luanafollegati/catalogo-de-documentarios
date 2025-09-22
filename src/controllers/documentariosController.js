@@ -26,7 +26,7 @@ const getDocumentariosById = (req, res) => {
         success: false,
         message: "Documentario não encontrado"
     })
-}
+};
 
 const createDocumentarios = (req, res) => {
     const { id, titulo, tema, diretor, duracao, anoLancamento, plataforma, avaliacao, categoria } = req.body;
