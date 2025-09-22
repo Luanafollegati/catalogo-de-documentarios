@@ -30,7 +30,16 @@ const getDocumentariosById = (req, res) => {
 
 //tem um erro aq
 const createDocumentarios = (req, res) => {
-  const {id, titulo, tema, diretor, duracao, anoLancamento, plataforma, avaliacao, categoria} = req.body;
+  const {
+    titulo,
+    tema,
+    diretor,
+    duracao,
+    anoLancamento,
+    plataforma,
+    avaliacao,
+    categoria,
+  } = req.body;
 
   if (!titulo) {
     return res.status(400).json({
@@ -91,15 +100,15 @@ const createDocumentarios = (req, res) => {
   }
 
   const novoDocumentario = {
-    id: 11,
-    titulo: "Wild Wild Country",
-    tema: "Cultos e Conflitos Sociais",
-    diretor: "Chapman Way e Maclain Way",
-    duracao: "6 episódios",
-    anoLancamento: 2018,
-    plataforma: "Netflix",
-    avaliacao: 8.0,
-    categoria: "Série Documental",
+    id: documentarios.length + 1,
+    titulo,
+    tema,
+    diretor,
+    duracao,
+    anoLancamento,
+    plataforma,
+    avaliacao,
+    categoria,
   };
 
   documentarios.push(novoDocumentario);
@@ -112,55 +121,105 @@ const createDocumentarios = (req, res) => {
 
 //deletar por id
 const deleteDocumentarios = (req, res) => {
-    let id = parseInt(req.params.id);
-    const documentarioParaRemover = documentarios.find(d => d.id === id);
+  let id = parseInt(req.params.id);
+  const documentarioParaRemover = documentarios.find((d) => d.id === id);
 
-    if (!documentarioParaRemover) {
-        return res.status(404).json({
-            success: false,
-            message: 'Este documentario nao existe'
-        })
-    }
-    const documentariosFiltrados = documentarios.filter(documentario => documentario.id !== id);
-    documentarios.splice(0, documentarios.length, ...documentariosFiltrados);
-    res.status(200).json({
-        success: true,
-        message: 'documentario deletado com sucesso',
-       documentarioRemovido: documentarioParaRemover
+  if (!documentarioParaRemover) {
+    return res.status(404).json({
+      success: false,
+      message: "Este documentario nao existe",
     });
+  }
+  const documentariosFiltrados = documentarios.filter(
+    (documentario) => documentario.id !== id
+  );
+  documentarios.splice(0, documentarios.length, ...documentariosFiltrados);
+  res.status(200).json({
+    success: true,
+    message: "documentario deletado com sucesso",
+    documentarioRemovido: documentarioParaRemover,
+  });
 };
 
-const updateDocumento = (req, res) => {
-    const id = parseInt(req.params.id);
+const updateDocumentario = (req, res) => {
+  const id = parseInt(req.params.id);
 
-    const { titulo, tema, diretor, duracao, anoLancamento, plataforma, avaliacao, categoria } = req.body;
+  const {
+    titulo,
+    tema,
+    diretor,
+    duracao,
+    anoLancamento,
+    plataforma,
+    avaliacao,
+    categoria,
+  } = req.body;
 
+  if (isNaN(id)) {
+    return res.status(400).json({
+      success: false,
+      message: "O id deve ser um número válido",
+    });
+  }
 
-    if (isNaN(id)) {
-        return res.status(400).json({
-            success: false,
-            message: "O id deve ser um número válido"
-        })
-    }
- 
-    const documentarioExiste = documentarios.find(documentario => documentario.id === id);
+  const documentarioExiste = documentarios.find(
+    (documentario) => documentario.id === id
+  );
 
-    if (!documentarioExiste) {
-        return res.status(400).json({
-            success: false,
-            message: "O documentario não existe."
-        })
-    }
+  if (!documentarioExiste) {
+    return res.status(400).json({
+      success: false,
+      message: "O documentario não existe.",
+    });
+  }
 
-    if(!duracao) {
-        if (elixir <= 0 || elixir >= 10) {
-            return res.status(400).json({
-                success: false,
-                message: "O campo 'elixir' deve estar entre 1 e 9!"
-            });
+  //Duração deve ser maior que 30 minutos
+  if (!duracao || duracao < 30) {
+    return res.status(400).json({
+      success: false,
+      message: "O campo 'duracao' é obrigatório",
+    });
+  }
+
+  //Avaliação deve estar entre 0 e 10
+  if (!avaliacao || avaliacao <= 0 || avaliacao >= 10) {
+    return res.status(400).json({
+      success: false,
+      message: "O campo 'avaliacao' é obrigatório e deve estar entre 1 e 10!",
+    });
+  }
+
+  const documentarioAtualizado = documentarios.map((documentario) => {
+    return documentario.id === id
+      ? {
+          ...documentario,
+          ...(titulo && { titulo }),
+          ...(tema && { tema }),
+          ...(diretor && { duracao }),
+          ...(anoLancamento && { anoLancamento }),
+          ...(plataforma && { plataforma }),
+          ...(avaliacao && { avaliacao }),
+          ...(categoria && { categoria }),
         }
-    }
-}
+      : documentario;
+  });
 
+  documentarios.splice(0, documentarios.length, ...documentarioAtualizado);
 
-export { getAllDocumentarios, getDocumentariosById, createDocumentarios, deleteDocumentarios  };
+  const documentarioNovo = documentarios.find(
+    (documentario) => documentario.id === id
+  );
+
+  res.status(200).json({
+    success: true,
+    message: "Dados atualizados com sucesso",
+    documentario: documentarioNovo,
+  });
+};
+export {
+  getAllDocumentarios,
+  getDocumentariosById,
+  createDocumentarios,
+  deleteDocumentarios,
+  updateDocumentario,
+};
