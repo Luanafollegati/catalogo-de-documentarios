@@ -28,6 +28,7 @@ const getDocumentariosById = (req, res) => {
   });
 };
 
+//tem um erro aq
 const createDocumentarios = (req, res) => {
   const {id, titulo, tema, diretor, duracao, anoLancamento, plataforma, avaliacao, categoria} = req.body;
 
