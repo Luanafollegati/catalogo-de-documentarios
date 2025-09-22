@@ -1,0 +1,20 @@
+{
+  "name": "atividade-avaliativa_luanafollegatiguerreiro",
+  "version": "1.0.0",
+  "main": "server.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+     "dev": "cls && nodemon server.js"
+  },
+ 
+  "keywords": ["atividade avaliativa", "API", "Senai"],
+  "author": "Luana",
+  "license": "MIT",
+  "description": "Sistema para organizar documentários por tema, diretor, plataforma e duração",
+  "dependencies": {
+    "dotenv": "^17.2.2",
+    "express": "^5.1.0",
+    "nodemon": "^3.1.10"
+  }
+}
